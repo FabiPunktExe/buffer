@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
+    `maven-publish`
 }
 
 group = "de.fabiexe"
@@ -48,6 +49,23 @@ kotlin {
     sourceSets {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+        }
+    }
+}
+
+publishing {
+    repositories {
+        maven("https://repo.diruptio.de/repository/maven-public-releases") {
+            name = "DiruptioPublic"
+            credentials {
+                username = (System.getenv("DIRUPTIO_REPO_USERNAME") ?: project.findProperty("maven_username") ?: "").toString()
+                password = (System.getenv("DIRUPTIO_REPO_PASSWORD") ?: project.findProperty("maven_password") ?: "").toString()
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["kotlin"])
         }
     }
 }
