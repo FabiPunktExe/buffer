@@ -1,0 +1,40 @@
+product:
+  type: kmp/lib
+  platforms:
+    - jvm
+    - js
+    - wasmJs
+    - linuxX64
+    - linuxArm64
+    - mingwX64
+    - macosArm64
+    - android
+    - iosX64
+    - iosArm64
+    - iosSimulatorArm64
+    - tvosArm64
+    - tvosSimulatorArm64
+    - watchosArm32
+    - watchosArm64
+    - watchosDeviceArm64
+    - watchosSimulatorArm64
+
+repositories:
+  - id: diruptio-public
+    url: https://repo.diruptio.de/repository/maven-public-releases
+    credentials:
+      file: local.properties
+      usernameKey: diruptio-repo.username
+      passwordKey: diruptio-repo.password
+    resolve: false
+    publish: true
+
+test-dependencies:
+  - $libs.kotlin.test
+
+settings:
+  publishing:
+    enabled: true
+    group: de.fabiexe
+    version: 1.0.0
+    publishSources: true

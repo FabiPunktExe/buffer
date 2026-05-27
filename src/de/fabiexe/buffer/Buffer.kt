@@ -39,7 +39,7 @@ interface Buffer {
     /**
      * Write a boolean value to the buffer.
      *
-     * @receiver value The boolean value to write to the buffer
+     * @param value The boolean value to write to the buffer
      */
     fun writeBoolean(value: Boolean)
 
@@ -53,7 +53,7 @@ interface Buffer {
     /**
      * Write an integer value to the buffer.
      *
-     * @receiver value The integer value to write to the buffer
+     * @param value The integer value to write to the buffer
      */
     fun writeInt(value: Int)
 
@@ -67,7 +67,7 @@ interface Buffer {
     /**
      * Write a long value to the buffer.
      *
-     * @receiver value The long value to write to the buffer
+     * @param value The long value to write to the buffer
      */
     fun writeLong(value: Long)
 
@@ -81,7 +81,7 @@ interface Buffer {
     /**
      * Write a float value to the buffer.
      *
-     * @receiver value The float value to write to the buffer
+     * @param value The float value to write to the buffer
      */
     fun writeFloat(value: Float)
 
@@ -95,7 +95,7 @@ interface Buffer {
     /**
      * Write a double value to the buffer.
      *
-     * @receiver value The double value to write to the buffer
+     * @param value The double value to write to the buffer
      */
     fun writeDouble(value: Double)
 
@@ -109,7 +109,7 @@ interface Buffer {
     /**
      * Write a string value to the buffer.
      *
-     * @receiver value The string value to write to the buffer
+     * @param value The string value to write to the buffer
      */
     fun writeString(value: String)
 

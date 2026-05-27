@@ -123,7 +123,7 @@ class BitBuffer : DefaultBuffer {
 
     fun writeBits(buffer: BitBuffer) {
         expand(max(0, buffer.size - (capacity - size)))
-        for (i in 0..<buffer.size) {
+        repeat(buffer.size) {
             writeBit(buffer.readBit())
         }
     }
@@ -134,7 +134,7 @@ class BitBuffer : DefaultBuffer {
         }
 
         val result = BitBuffer(count)
-        for (i in 0 until count) {
+        repeat(count) {
             result.writeBit(readBit())
         }
         result.resetPosition()
