@@ -9,8 +9,11 @@ import kotlin.math.min
  * It automatically expands its capacity as needed.
  */
 class BitBuffer : DefaultBuffer {
-    override var bytes: ByteArray = ByteArray(0)
-        private set
+    private val containerAllocator: ByteContainerAllocator
+    private var byteContainer: ByteContainer
+
+    override val bytes: ByteArray
+        get() = byteContainer.bytes
 
     var capacity: Int = 0
         private set
@@ -21,21 +24,38 @@ class BitBuffer : DefaultBuffer {
     private var bitPosition: Int = 0
     private var bytePosition: Int = 0
 
-    /** Create a new BitBuffer with an initial capacity of `0` bits  */
-    constructor() : this(0)
+    /** Create a new BitBuffer with an initial capacity of `0` bits */
+    constructor() : this(ByteArrayAllocator)
+
+    /**
+     * Create a new BitBuffer with an initial capacity of `0` bits
+     *
+     * @param containerAllocator The allocator for the underlying byte container
+     */
+    constructor(containerAllocator: ByteContainerAllocator) : this(containerAllocator, 0)
 
     /**
      * Create a new BitBuffer with a specified initial capacity in bits
-     * 
+     *
      * @param initialCapacity The initial capacity in bits
      */
-    constructor(initialCapacity: Int) {
-        expand(initialCapacity)
+    constructor(initialCapacity: Int) : this(ByteArrayAllocator, initialCapacity)
+
+    /**
+     * Create a new BitBuffer with a specified initial capacity in bits
+     *
+     * @param containerAllocator The allocator for the underlying byte container
+     * @param initialCapacity The initial capacity in bits
+     */
+    constructor(containerAllocator: ByteContainerAllocator, initialCapacity: Int) {
+        this.containerAllocator = containerAllocator
+        this.byteContainer = containerAllocator.allocate(ceil(initialCapacity.toDouble() / Byte.SIZE_BITS).toInt())
+        this.capacity = initialCapacity
     }
 
     /**
      * Expand the buffer's capacity by a specified number of bits.
-     * 
+     *
      * @param additionalCapacity The number of bits to expand the capacity by
      * @throws IllegalArgumentException If the additional capacity is negative
      */
@@ -46,10 +66,10 @@ class BitBuffer : DefaultBuffer {
         require(additionalCapacity >= 0) { "Additional capacity must be non-negative" }
         capacity += additionalCapacity
         val newByteCapacity = ceil(capacity.toDouble() / Byte.SIZE_BITS).toInt()
-        if (newByteCapacity > bytes.size) {
-            val newBytes = ByteArray(newByteCapacity)
-            arraycopy(bytes, 0, newBytes, 0, bytes.size)
-            bytes = newBytes
+        if (newByteCapacity > byteContainer.size) {
+            val newByteContainer = containerAllocator.allocate(newByteCapacity)
+            byteContainer.copyInto(newByteContainer)
+            byteContainer = newByteContainer
         }
     }
 
@@ -60,9 +80,9 @@ class BitBuffer : DefaultBuffer {
         }
 
         capacity = size
-        val newBytes = ByteArray(ceil(size.toDouble() / Byte.SIZE_BITS).toInt())
-        arraycopy(bytes, 0, newBytes, 0, min(bytes.size, newBytes.size))
-        bytes = newBytes
+        val newByteContainer = containerAllocator.allocate(ceil(size.toDouble() / Byte.SIZE_BITS).toInt())
+        byteContainer.copyInto(newByteContainer, endIndex = min(byteContainer.size, newByteContainer.size))
+        byteContainer = newByteContainer
     }
 
     /** Reset the position of the buffer to the beginning  */
@@ -89,9 +109,9 @@ class BitBuffer : DefaultBuffer {
         }
 
         if (value) {
-            bytes[bytePosition] = (bytes[bytePosition].toInt() or (1 shl bitPosition)).toByte()
+            byteContainer[bytePosition] = (byteContainer[bytePosition].toInt() or (1 shl bitPosition)).toByte()
         } else {
-            bytes[bytePosition] = (bytes[bytePosition].toInt() and (1 shl bitPosition).inv()).toByte()
+            byteContainer[bytePosition] = (byteContainer[bytePosition].toInt() and (1 shl bitPosition).inv()).toByte()
         }
         size++
         bitPosition++
@@ -112,7 +132,7 @@ class BitBuffer : DefaultBuffer {
             throw IndexOutOfBoundsException("No more bits to read")
         }
 
-        val value = (bytes[bytePosition].toInt() and (1 shl bitPosition)) != 0
+        val value = (byteContainer[bytePosition].toInt() and (1 shl bitPosition)) != 0
         bitPosition++
         if (bitPosition == 8) {
             bitPosition = 0

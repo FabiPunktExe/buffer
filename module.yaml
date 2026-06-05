@@ -19,6 +19,9 @@ product:
     - watchosDeviceArm64
     - watchosSimulatorArm64
 
+aliases:
+  - jvmAndAndroid: [ jvm, android ]
+
 repositories:
   - id: diruptio-public
     url: https://repo.diruptio.de/repository/maven-public-releases
@@ -36,5 +39,5 @@ settings:
   publishing:
     enabled: true
     group: de.fabiexe
-    version: 1.0.0
+    version: 1.1.0
     publishSources: true
