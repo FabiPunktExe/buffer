@@ -1,5 +1,0 @@
-[versions]
-kotlin = "2.3.21"
-
-[libraries]
-kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }

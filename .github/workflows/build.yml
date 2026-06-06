@@ -14,13 +14,7 @@ jobs:
         with:
           java-version: 21
           distribution: temurin
-      - name: Prepare project
-        run: |
-          cat << EOF > local.properties
-          diruptio-repo.username=
-          diruptio-repo.password=
-          EOF
       - name: Build
         run: |
-          chmod +x ./kotlin
-          ./kotlin build
+          chmod +x ./gradlew
+          ./gradlew build --stacktrace
