@@ -15,11 +15,12 @@ class BitBuffer : DefaultBuffer {
     override val bytes: ByteArray
         get() = byteContainer.bytes
 
-    var capacity: Int = 0
+    override var capacity: Int = 0
         private set
 
     /** The current size of the [BitBuffer] in bits. The size is how many bits are currently written. */
-    var size: Int = 0
+    override var size: Int = 0
+        private set
 
     private var bitPosition: Int = 0
     private var bytePosition: Int = 0
@@ -74,7 +75,7 @@ class BitBuffer : DefaultBuffer {
     }
 
     /** Resize the buffer to match the current size  */
-    fun resize() {
+    override fun resize() {
         if (size == capacity) {
             return
         }
@@ -86,13 +87,13 @@ class BitBuffer : DefaultBuffer {
     }
 
     /** Reset the position of the buffer to the beginning  */
-    fun resetPosition() {
+    override fun resetPosition() {
         bitPosition = 0
         bytePosition = 0
     }
 
     /** Flip the buffer by resizing and resetting the position  */
-    fun flip() {
+    override fun flip() {
         resize()
         resetPosition()
     }
@@ -128,7 +129,7 @@ class BitBuffer : DefaultBuffer {
      * @throws IndexOutOfBoundsException If there are no more bits to read
      */
     fun readBit(): Boolean {
-        if (bitPosition >= size) {
+        if (bytePosition * 8 + bitPosition >= size) {
             throw IndexOutOfBoundsException("No more bits to read")
         }
 
@@ -149,7 +150,8 @@ class BitBuffer : DefaultBuffer {
     }
 
     fun readBits(count: Int): BitBuffer {
-        if (count < 0 || count > size - bitPosition) {
+        val currentAbsoluteBitPosition = bytePosition * 8 + bitPosition
+        if (count < 0 || count > size - currentAbsoluteBitPosition) {
             throw IndexOutOfBoundsException("Cannot read $count bits from current position")
         }
 

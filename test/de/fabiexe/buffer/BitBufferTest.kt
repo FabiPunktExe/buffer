@@ -2,7 +2,9 @@ package de.fabiexe.buffer
 
 import kotlin.test.*
 
-class BitBufferTest {
+class BitBufferTest : BufferTestBase() {
+
+    override fun createBuffer(capacity: Int): BitBuffer = BitBuffer(capacity)
 
     @Test
     fun testInitialization() {
@@ -38,110 +40,13 @@ class BitBufferTest {
     @Test
     fun testExpand() {
         val buffer = BitBuffer(8)
-        buffer.writeBit(true) // bit 0
-        buffer.writeBit(true) // bit 1
-        buffer.writeBit(true) // bit 2
-        buffer.writeBit(true) // bit 3
-        buffer.writeBit(true) // bit 4
-        buffer.writeBit(true) // bit 5
-        buffer.writeBit(true) // bit 6
-        buffer.writeBit(true) // bit 7
+        repeat(8) { buffer.writeBit(true) }
         
         assertEquals(8, buffer.capacity)
         
         buffer.writeBit(true) // bit 8, triggers expand
         assertTrue(buffer.capacity > 8)
         assertEquals(9, buffer.size)
-    }
-
-    @Test
-    fun testWriteReadByte() {
-        val buffer = BitBuffer()
-        val value: Byte = 0b1010101.toByte()
-        buffer.writeByte(value)
-        
-        assertEquals(8, buffer.size)
-        buffer.resetPosition()
-        assertEquals(value, buffer.readByte())
-    }
-
-    @Test
-    fun testWriteReadInt() {
-        val buffer = BitBuffer()
-        val values = listOf(0, 1, -1, 100, -100, Int.MAX_VALUE, Int.MIN_VALUE)
-        
-        for (v in values) {
-            buffer.writeInt(v)
-        }
-        
-        buffer.resetPosition()
-        for (v in values) {
-            assertEquals(v, buffer.readInt(), "Failed for value $v")
-        }
-    }
-
-    @Test
-    fun testWriteReadLong() {
-        val buffer = BitBuffer()
-        val values = listOf(0L, 1L, -1L, 100L, -100L, Long.MAX_VALUE, Long.MIN_VALUE)
-        
-        for (v in values) {
-            buffer.writeLong(v)
-        }
-        
-        buffer.resetPosition()
-        for (v in values) {
-            assertEquals(v, buffer.readLong(), "Failed for value $v")
-        }
-    }
-
-    @Test
-    fun testWriteReadBoolean() {
-        val buffer = BitBuffer()
-        buffer.writeBoolean(true)
-        buffer.writeBoolean(false)
-        
-        buffer.resetPosition()
-        assertTrue(buffer.readBoolean())
-        assertFalse(buffer.readBoolean())
-    }
-
-    @Test
-    fun testWriteReadString() {
-        val buffer = BitBuffer()
-        val text = "Hello BitBuffer! \uD83D\uDE00"
-        buffer.writeString(text)
-        
-        buffer.resetPosition()
-        assertEquals(text, buffer.readString())
-    }
-
-    @Test
-    fun testFlip() {
-        val buffer = BitBuffer()
-        buffer.writeBit(true)
-        buffer.writeBit(false)
-        buffer.writeBit(true)
-        
-        assertEquals(3, buffer.size)
-        buffer.flip()
-        
-        assertEquals(3, buffer.capacity)
-        assertTrue(buffer.readBit())
-        assertFalse(buffer.readBit())
-        assertTrue(buffer.readBit())
-        assertFailsWith<IndexOutOfBoundsException> { buffer.readBit() }
-    }
-
-    @Test
-    fun testResize() {
-        val buffer = BitBuffer(100)
-        buffer.writeBit(true)
-        assertEquals(100, buffer.capacity)
-        
-        buffer.resize()
-        assertEquals(1, buffer.capacity)
-        assertEquals(1, buffer.bytes.size)
     }
 
     @Test

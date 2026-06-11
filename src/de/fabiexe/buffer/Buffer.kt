@@ -8,6 +8,31 @@ interface Buffer {
     val bytes: ByteArray
 
     /**
+     * The capacity of the buffer.
+     */
+    val capacity: Int
+
+    /**
+     * The current size of the buffer.
+     */
+    val size: Int
+
+    /**
+     * Resets the position of the buffer to the beginning.
+     */
+    fun resetPosition()
+
+    /**
+     * Resizes the buffer to match its current size.
+     */
+    fun resize()
+
+    /**
+     * Flips the buffer, typically resetting position and potentially resizing.
+     */
+    fun flip()
+
+    /**
      * Write a single byte to the buffer.
      *
      * @param value The byte value to write to the buffer

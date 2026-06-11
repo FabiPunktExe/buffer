@@ -1,13 +1,10 @@
-package de.fabiexe.de.fabiexe.buffer
+package de.fabiexe.buffer
 
-import de.fabiexe.buffer.BitBuffer
-import de.fabiexe.buffer.DirectByteBufferAllocator
-import de.fabiexe.buffer.PooledDirectByteBufferAllocator
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class BitBufferTest {
+class BitBufferJvmTest {
 
     @Test
     fun testWithDirectByteBuffer() {
