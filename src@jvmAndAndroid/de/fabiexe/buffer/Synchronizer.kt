@@ -1,11 +1,9 @@
-package de.fabiexe.buffer;
+package de.fabiexe.buffer
 
-import java.util.function.Supplier;
-
-class Synchronizer {
-    public static <T> T synchronize(Object lock, Supplier<T> action) {
-        synchronized (lock) {
-            return action.get();
+internal object Synchronizer {
+    inline fun <T> synchronize(lock: Any, action: () -> T): T {
+        synchronized(lock) {
+            return action()
         }
     }
 }
