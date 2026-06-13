@@ -20,13 +20,23 @@ class BitBuffer : DefaultBuffer {
 
     /** The current size of the [BitBuffer] in bits. The size is how many bits are currently written. */
     override var size: Int = 0
-        private set
 
     private var bitPosition: Int = 0
     private var bytePosition: Int = 0
 
     /** Create a new BitBuffer with an initial capacity of `0` bits */
     constructor() : this(ByteArrayAllocator)
+
+    /**
+     * Create a new BitBuffer initialized with the given byte array.
+     *
+     * @param bytes The initial byte array
+     */
+    constructor(bytes: ByteArray) : this(ByteArrayAllocator) {
+        this.byteContainer = ByteArrayContainer(bytes)
+        this.capacity = bytes.size * 8
+        this.size = bytes.size * 8
+    }
 
     /**
      * Create a new BitBuffer with an initial capacity of `0` bits

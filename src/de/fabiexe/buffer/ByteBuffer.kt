@@ -17,11 +17,21 @@ class ByteBuffer : DefaultBuffer {
         private set
 
     override var size: Int = 0
-        private set
 
     private var position: Int = 0
 
     constructor() : this(ByteArrayAllocator)
+
+    /**
+     * Create a new ByteBuffer initialized with the given byte array.
+     *
+     * @param bytes The initial byte array
+     */
+    constructor(bytes: ByteArray) : this(ByteArrayAllocator) {
+        this.byteContainer = ByteArrayContainer(bytes)
+        this.capacity = bytes.size
+        this.size = bytes.size
+    }
 
     constructor(containerAllocator: ByteContainerAllocator) : this(containerAllocator, 0)
 

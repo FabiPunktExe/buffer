@@ -56,4 +56,15 @@ class ByteBufferTest : BufferTestBase() {
             buffer.readLong()
         }
     }
+
+    @Test
+    fun testInitializationWithByteArray() {
+        val bytes = byteArrayOf(0x01, 0x02)
+        val buffer = ByteBuffer(bytes)
+        assertEquals(2, buffer.size)
+        assertEquals(2, buffer.capacity)
+        assertEquals(bytes.size, buffer.bytes.size)
+        assertEquals(bytes[0], buffer.bytes[0])
+        assertEquals(bytes[1], buffer.bytes[1])
+    }
 }

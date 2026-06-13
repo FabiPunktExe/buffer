@@ -39,5 +39,5 @@ settings:
   publishing:
     enabled: true
     group: de.fabiexe
-    version: 1.2.0
+    version: 1.2.1
     publishSources: true

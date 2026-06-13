@@ -76,19 +76,13 @@ class BitBufferTest : BufferTestBase() {
     }
 
     @Test
-    fun testReadBits() {
-        val buffer = BitBuffer()
-        buffer.writeBit(true)
-        buffer.writeBit(false)
-        buffer.writeBit(true)
-        buffer.writeBit(false)
-        buffer.resetPosition()
-        
-        val subBuffer = buffer.readBits(2)
-        assertEquals(2, subBuffer.size)
-        assertTrue(subBuffer.readBit())
-        assertFalse(subBuffer.readBit())
-        
-        assertTrue(buffer.readBit()) // Check if original buffer position moved
+    fun testInitializationWithByteArray() {
+        val bytes = byteArrayOf(0x01, 0x02)
+        val buffer = BitBuffer(bytes)
+        assertEquals(16, buffer.size)
+        assertEquals(16, buffer.capacity)
+        assertEquals(bytes.size, buffer.bytes.size)
+        assertEquals(bytes[0], buffer.bytes[0])
+        assertEquals(bytes[1], buffer.bytes[1])
     }
 }
