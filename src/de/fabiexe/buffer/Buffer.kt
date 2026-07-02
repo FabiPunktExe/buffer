@@ -76,6 +76,20 @@ interface Buffer {
     fun readBoolean(): Boolean
 
     /**
+     * Write a short value to the buffer.
+     *
+     * @param value The short value to write to the buffer
+     */
+    fun writeShort(value: Short)
+
+    /**
+     * Read a short value from the buffer.
+     *
+     * @return The short value read from the buffer
+     */
+    fun readShort(): Short
+
+    /**
      * Write an integer value to the buffer.
      *
      * @param value The integer value to write to the buffer

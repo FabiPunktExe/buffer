@@ -1,5 +1,6 @@
 package de.fabiexe.buffer
 
+import kotlin.experimental.inv
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
@@ -192,17 +193,55 @@ class BitBuffer : DefaultBuffer {
         return value
     }
 
-    override fun writeByte(value: Byte) {
-        writeByte(value, 8)
-    }
-
-    override fun readByte(): Byte {
-        return readByte(8)
-    }
+    override fun writeByte(value: Byte) = writeByte(value, 8)
+    override fun readByte(): Byte = readByte(8)
 
     override fun writeBoolean(value: Boolean) = writeBit(value)
-
     override fun readBoolean(): Boolean = readBit()
+
+    override fun writeShort(value: Short) {
+        writeBit(value < 0)
+
+        var size: Byte = 0
+        if (value >= 0) {
+            for (i in 0..14) {
+                if ((value.toInt() and (1 shl i)) != 0) {
+                    size = (i + 1).toByte()
+                }
+            }
+        } else {
+            for (i in 0..14) {
+                if ((value.toInt() and (1 shl i)) == 0) {
+                    size = (i + 1).toByte()
+                }
+            }
+        }
+        writeByte(size, 4)
+
+        if (value >= 0) {
+            for (i in 0 until size) {
+                writeBit((value.toInt() and (1 shl i)) != 0)
+            }
+        } else {
+            for (i in 0 until size) {
+                writeBit((value.inv().toInt() and (1 shl i)) != 0)
+            }
+        }
+    }
+
+    override fun readShort(): Short {
+        val negative = readBit()
+        val size = readByte(4)
+
+        var value = 0
+        for (i in 0 until size) {
+            if (readBit()) {
+                value = value or (1 shl i)
+            }
+        }
+
+        return if (negative) value.inv().toShort() else value.toShort()
+    }
 
     override fun writeInt(value: Int) {
         writeBit(value < 0)

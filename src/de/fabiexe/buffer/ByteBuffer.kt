@@ -77,6 +77,27 @@ class ByteBuffer : DefaultBuffer {
         return readByte() != 0.toByte()
     }
 
+    override fun writeShort(value: Short) {
+        ensureCapacity(2)
+        for (i in 0 until 2) {
+            byteContainer[position + i] = ((value.toInt() shr (8 * (1 - i))) and 0xFF).toByte()
+        }
+        position += 2
+        size = max(size, position)
+    }
+
+    override fun readShort(): Short {
+        if (position + 2 > size) {
+            throw IndexOutOfBoundsException("Not enough bytes to read Short")
+        }
+        var value = 0
+        for (i in 0 until 2) {
+            value = value or ((byteContainer[position + i].toInt() and 0xFF) shl (8 * (1 - i)))
+        }
+        position += 2
+        return value.toShort()
+    }
+
     override fun writeInt(value: Int) {
         ensureCapacity(4)
         for (i in 0 until 4) {
