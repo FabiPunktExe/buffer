@@ -2,38 +2,37 @@ product:
   type: kmp/lib
   platforms:
     - jvm
+    - android
     - js
     - wasmJs
+    - wasmWasi
     - linuxX64
     - linuxArm64
-    - mingwX64
     - macosArm64
-    - android
+    - tvosArm64
+    - tvosSimulatorArm64
     - iosX64
     - iosArm64
     - iosSimulatorArm64
-    - tvosArm64
-    - tvosSimulatorArm64
+    - iosX64
     - watchosArm32
     - watchosArm64
     - watchosDeviceArm64
     - watchosSimulatorArm64
+    - mingwX64
 
 aliases:
   - jvmAndAndroid: [ jvm, android ]
 
 repositories:
-  - id: diruptio-public
+  - id: diruptioPublic
     url: https://repo.diruptio.de/repository/maven-public-releases
-    credentials:
-      file: local.properties
-      usernameKey: diruptio-repo.username
-      passwordKey: diruptio-repo.password
     resolve: false
     publish: true
-
-test-dependencies:
-  - $libs.kotlin.test
+    credentials:
+      file: local.properties
+      usernameKey: diruptio_repo_username
+      passwordKey: diruptio_repo_password
 
 settings:
   publishing:

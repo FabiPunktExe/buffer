@@ -16,5 +16,7 @@ jobs:
           distribution: temurin
       - name: Build
         run: |
-          chmod +x ./gradlew
-          ./gradlew build --stacktrace
+          chmod +x ./kotlin
+          ./kotlin build
+      - name: Test
+        run: ./kotlin test

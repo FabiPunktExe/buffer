@@ -27,7 +27,7 @@ class PooledDirectByteBufferAllocator(initialCount: Int, initialSize: Int) : Byt
                     val allocatedSection = sections.keys.find { it in offset until offset + size }
                     if (allocatedSection == null) {
                         section = PooledDirectByteBufferContainer.Section(buffer, offset, size, false)
-                        sections[offset] = section!!
+                        sections[offset] = section
                         break
                     } else {
                         offset = allocatedSection + sections[allocatedSection]!!.size
