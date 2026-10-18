@@ -19,6 +19,9 @@ product:
     - watchosSimulatorArm64
     - mingwX64
 
+apply:
+  - //publishing.module-template.yaml
+
 dependencies:
   - //buffer
   - $ktor.io: exported
@@ -26,21 +29,7 @@ dependencies:
 test-dependencies:
   - $libs.kotlinx.coroutines.test
 
-repositories:
-  - id: diruptioPublic
-    url: https://repo.diruptio.de/repository/maven-public-releases
-    resolve: false
-    publish: true
-    credentials:
-      file: //local.properties
-      usernameKey: diruptio_repo_username
-      passwordKey: diruptio_repo_password
-
 settings:
   ktor: enabled
   publishing:
-    enabled: true
-    group: de.fabiexe.buffer
     artifactId: buffer-ktor
-    version: 1.3.0
-    publishSources: true

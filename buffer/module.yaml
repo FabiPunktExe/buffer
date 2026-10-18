@@ -20,23 +20,12 @@ product:
     - watchosSimulatorArm64
     - mingwX64
 
+apply:
+  - //publishing.module-template.yaml
+
 aliases:
   - jvmAndAndroid: [ jvm, android ]
 
-repositories:
-  - id: diruptioPublic
-    url: https://repo.diruptio.de/repository/maven-public-releases
-    resolve: false
-    publish: true
-    credentials:
-      file: //local.properties
-      usernameKey: diruptio_repo_username
-      passwordKey: diruptio_repo_password
-
 settings:
   publishing:
-    enabled: true
-    group: de.fabiexe.buffer
     artifactId: buffer
-    version: 1.3.0
-    publishSources: true

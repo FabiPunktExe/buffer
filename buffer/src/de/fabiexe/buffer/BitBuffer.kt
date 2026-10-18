@@ -155,8 +155,18 @@ class BitBuffer : DefaultBuffer {
 
     fun writeBits(buffer: BitBuffer) {
         expand(max(0, buffer.size - (capacity - size)))
-        repeat(buffer.size) {
+        val size = buffer.size
+        var i = 0
+        while (buffer.bitPosition % 8 != 0 && i < size) {
             writeBit(buffer.readBit())
+        }
+        while (i + 8 <= size) {
+            writeByte(buffer.readByte())
+            i += 8
+        }
+        while (i < size) {
+            writeBit(buffer.readBit())
+            i++
         }
     }
 
@@ -193,8 +203,39 @@ class BitBuffer : DefaultBuffer {
         return value
     }
 
-    override fun writeByte(value: Byte) = writeByte(value, 8)
-    override fun readByte(): Byte = readByte(8)
+    override fun writeByte(value: Byte) {
+        if (size + 8 > capacity) {
+            expand(capacity / 4 + 8)
+        }
+        if (bitPosition == 0) {
+            byteContainer[bytePosition] = value
+        } else {
+            val intValue = value.toInt()
+            byteContainer[bytePosition] = (byteContainer[bytePosition].toInt() and
+                    (0xFF shl bitPosition).inv() or
+                    (intValue shl bitPosition)).toByte()
+            byteContainer[bytePosition + 1] = (byteContainer[bytePosition + 1].toInt() and
+                    (0xFF shr (8 - bitPosition)).inv() or
+                    (intValue shr (8 - bitPosition))).toByte()
+        }
+        size += 8
+        bytePosition++
+    }
+
+    override fun readByte(): Byte {
+        if (bytePosition * 8 + bitPosition + 8 > size) {
+            throw IndexOutOfBoundsException("No more bytes to read")
+        }
+        val value = if (bitPosition == 0) {
+            byteContainer[bytePosition]
+        } else {
+            val lowerBits = (byteContainer[bytePosition].toInt() and 0xFF) ushr bitPosition
+            val higherBits = (byteContainer[bytePosition + 1].toInt() and 0xFF) shl (8 - bitPosition)
+            (lowerBits or higherBits).toByte()
+        }
+        bytePosition++
+        return value
+    }
 
     override fun writeBoolean(value: Boolean) = writeBit(value)
     override fun readBoolean(): Boolean = readBit()
